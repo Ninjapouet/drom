@@ -236,7 +236,9 @@ let to_files share p =
 let project_of_toml ?file ?default table =
   let project_drom_version =
     match EzToml.get_string_option table [ "project"; "drom-version" ] with
-    | None -> Globals.min_drom_version
+    | None ->
+      (* Using current version by default. *)
+      Version.version
     | Some version ->
         match VersionCompare.compare version Version.version with
         | 1 ->
@@ -673,7 +675,23 @@ let project_of_toml ?file ?default table =
     }
   in
   package.project <- project;
-  List.iter (fun p -> p.project <- project) packages;
+  List.iter (fun p ->
+    p.project <- project;
+    if (
+      VersionCompare.(project_drom_version >= "0.9.2") &&
+      p.p_sites <> Sites.default &&
+      not (List.mem_assoc "dune-site" p.p_dependencies)
+    ) then
+      (* Sites dynamic loading (available after 0.9.2) needs [dune-site]. *)
+      p.p_dependencies <- ("dune-site", {
+        depname = None;
+        depversions = [ Ge "3.14.0" ];
+        deptest = false;
+        depdoc = false;
+        depopt = false;
+        dep_pin = None;
+      }) :: p.p_dependencies
+  ) packages;
   project
 
 let of_string ~msg ?default content =
