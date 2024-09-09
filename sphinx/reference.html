@@ -5,8 +5,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Description &mdash; drom master
- (9aaccb2
-) (2023/03/09 16:56) documentation</title>
+ (61aee33
+) (2024/09/09 14:02) documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/fixes.css" type="text/css" />
@@ -32,7 +32,7 @@
           </a>
               <div class="version">
                 master
- (9aaccb2
+ (61aee33
 )
               </div>
 <div role="search">
@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-dependencies-table">The <code class="code docutils literal notranslate"><span class="pre">[dependencies]</span></code> table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-tools-table">The <code class="code docutils literal notranslate"><span class="pre">[tools]</span></code> table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-package-table">The <code class="code docutils literal notranslate"><span class="pre">[package]</span></code> table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-fields-table">The <code class="code docutils literal notranslate"><span class="pre">[fields]</span></code> table</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#the-package-toml-files">The <code class="code docutils literal notranslate"><span class="pre">package.toml</span></code> Files</a></li>
@@ -67,6 +68,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="commands.html">Sub-commands and Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">User Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usecases.html">Use Cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="github.html">Github Projects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="licenses.html">Managing Licenses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">How to install</a></li>
@@ -340,6 +342,22 @@ information on the packages.</p>
 <code class="code docutils literal notranslate"><span class="pre">drom</span> <span class="pre">project</span> <span class="pre">--upgrade</span></code>). You can check the list of available
 fields in the documentation of <code class="code docutils literal notranslate"><span class="pre">package.toml</span></code>.</p>
 </section>
+<section id="the-fields-table">
+<h3>The <code class="code docutils literal notranslate"><span class="pre">[fields]</span></code> table<a class="headerlink" href="#the-fields-table" title="Permalink to this headline"></a></h3>
+<p>The <code class="code docutils literal notranslate"><span class="pre">fields</span></code> table contains fields that will be added to the
+the <code class="code docutils literal notranslate"><span class="pre">dune-project</span></code> file. There is two fields may be used :</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">dune-project-header</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dune-project-trailer</span></code></p></li>
+</ul>
+<p>The first one add verbatim content to the <code class="code docutils literal notranslate"><span class="pre">dune-project</span></code> file, right
+after the <code class="code docutils literal notranslate"><span class="pre">(lang</span> <span class="pre">dune</span> <span class="pre">X.Y)</span></code> line. The second one add verbatim content
+at the end of file.</p>
+<p>Using those fields may be required when using very specific <code class="code docutils literal notranslate"><span class="pre">dune</span></code>
+build feature that are not handled by <code class="code docutils literal notranslate"><span class="pre">drom</span></code>. For example, using
+the parser generator <code class="code docutils literal notranslate"><span class="pre">menhir</span></code> for non trivial cases will likely need
+such tuning.</p>
+</section>
 </section>
 <section id="the-package-toml-files">
 <h2>The <code class="code docutils literal notranslate"><span class="pre">package.toml</span></code> Files<a class="headerlink" href="#the-package-toml-files" title="Permalink to this headline"></a></h2>
@@ -398,6 +416,27 @@ if not specified:</p>
 <li><p><code class="code docutils literal notranslate"><span class="pre">pack-modules</span></code>: whether modules should be wrapped or not</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">synopsis</span></code>: the one-line description of the package</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code>: the version of this package</p></li>
+</ul>
+<p>For <code class="code docutils literal notranslate"><span class="pre">menhir</span></code> usage, you will find an optional <code class="code docutils literal notranslate"><span class="pre">[menhir]</span></code> talbe,
+with the following fields:
+* <code class="code docutils literal notranslate"><span class="pre">version</span></code>: the version of the menhir language configuration
+* <code class="code docutils literal notranslate"><span class="pre">parser</span></code>: a table with the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">modules</span></code>: an array of string with all your menhir modules</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">merge-into</span></code>: an optional string for the name of the merged module,
+by default the last value in the <code class="code docutils literal notranslate"><span class="pre">modules</span></code> array if not provided</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">tokens</span></code>: an optional to add the <code class="code docutils literal notranslate"><span class="pre">--external-tokens</span></code> flag</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">flags</span></code>: an optional string array with menhir flags</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">infer</span></code>: an optional boolean which adds the <code class="code docutils literal notranslate"><span class="pre">(infer</span> <span class="pre">&lt;bool&gt;)</span></code>
+rule to the <code class="code docutils literal notranslate"><span class="pre">dune</span></code> file</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">tokens</span></code>: an optional table that will add the <cite>–only-tokens</cite> flag
+to the <code class="code docutils literal notranslate"><span class="pre">menhir</span></code> rule with the following fiels:
+* <code class="code docutils literal notranslate"><span class="pre">modules</span></code>: a string array with all the modules to add to the rule
+* <code class="code docutils literal notranslate"><span class="pre">flags</span></code>: an optional string array with all the flags to add to menhir</p></li>
 </ul>
 <p>Finally, there is a table <code class="code docutils literal notranslate"><span class="pre">[fields]</span></code> within a
 package. Currently, the following fields are used by skeletons:</p>
@@ -659,7 +698,7 @@ skeleton.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright OCamlPro SAS &amp; Origin Labs SAS.</p>
+    <p>&#169; Copyright OCamlPro SAS.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
